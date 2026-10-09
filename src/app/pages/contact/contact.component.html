@@ -1,0 +1,102 @@
+<section class="page-hero">
+  <div class="container text-center">
+    <p class="eyebrow">Contact Us</p>
+    <h1 class="page-title">We'd love to host you</h1>
+    <p class="page-sub">Visit, call or write — our coordinator replies within a day.</p>
+  </div>
+</section>
+
+<section class="section pt-5">
+  <div class="container">
+    <div class="row g-4 mb-5">
+      <div class="col-md-4">
+        <a class="contact-tile" [href]="'tel:' + venue.business.phone">
+          <span class="amenity-icon">☏</span>
+          <span class="contact-label">Call us</span>
+          <span class="contact-value">{{ venue.business.phone }}</span>
+        </a>
+      </div>
+      <div class="col-md-4">
+        <a class="contact-tile" [href]="'https://wa.me/' + venue.business.whatsapp" target="_blank" rel="noopener">
+          <span class="amenity-icon">✉</span>
+          <span class="contact-label">WhatsApp</span>
+          <span class="contact-value">Chat with our coordinator</span>
+        </a>
+      </div>
+      <div class="col-md-4">
+        <a class="contact-tile" [href]="'mailto:' + venue.business.email">
+          <span class="amenity-icon">✦</span>
+          <span class="contact-label">Email</span>
+          <span class="contact-value">{{ venue.business.email }}</span>
+        </a>
+      </div>
+    </div>
+
+    <div class="row g-4">
+      <div class="col-lg-7">
+        <div class="form-card h-100">
+          <h3 class="form-step mb-4">Send us a message</h3>
+          <div class="sent-note fade-in" *ngIf="sent; else contactForm">
+            <strong>Thank you!</strong> Your message is on its way. We'll get back to you shortly.
+            <button type="button" class="btn btn-link link-gold p-0 ms-2" (click)="sent = false">Send another</button>
+          </div>
+          <ng-template #contactForm>
+            <form [formGroup]="form" (ngSubmit)="submit()" novalidate>
+              <div class="row g-3">
+                <div class="col-md-6">
+                  <label class="form-label" for="c-name">Name</label>
+                  <input id="c-name" class="form-control" formControlName="name" [class.is-invalid]="invalid('name')">
+                  <div class="invalid-feedback">Please enter your name.</div>
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label" for="c-phone">Phone</label>
+                  <input id="c-phone" type="tel" class="form-control" formControlName="phone" [class.is-invalid]="invalid('phone')">
+                  <div class="invalid-feedback">Please enter a valid phone number.</div>
+                </div>
+                <div class="col-12">
+                  <label class="form-label" for="c-subject">I'm interested in</label>
+                  <select id="c-subject" class="form-select" formControlName="subject">
+                    <option>Site visit</option>
+                    <option>Pricing &amp; packages</option>
+                    <option>Catering &amp; décor</option>
+                    <option>Something else</option>
+                  </select>
+                </div>
+                <div class="col-12">
+                  <label class="form-label" for="c-message">Message</label>
+                  <textarea id="c-message" rows="4" class="form-control" formControlName="message" [class.is-invalid]="invalid('message')"></textarea>
+                  <div class="invalid-feedback">Tell us a little more (at least 10 characters).</div>
+                </div>
+                <div class="col-12">
+                  <button type="submit" class="btn btn-maroon px-4">Send Message</button>
+                </div>
+              </div>
+            </form>
+          </ng-template>
+        </div>
+      </div>
+
+      <div class="col-lg-5">
+        <div class="form-card h-100">
+          <h3 class="form-step mb-3">Visit us</h3>
+          <p class="mb-1">{{ venue.business.address }}</p>
+          <p class="text-body-muted small">{{ venue.business.hours }}</p>
+          <div class="map-frame">
+            <iframe [src]="mapUrl" title="V Convention location" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="mt-5 mx-auto faq-wrap">
+      <h2 class="section-title text-center">Frequently asked</h2>
+      <div class="ornament-line mx-auto mb-4"></div>
+      <div class="faq" *ngFor="let f of faqs; let i = index" [class.open]="openFaq === i">
+        <button type="button" class="faq-q" (click)="toggleFaq(i)" [attr.aria-expanded]="openFaq === i">
+          {{ f.q }} <span class="faq-icon">{{ openFaq === i ? '−' : '+' }}</span>
+        </button>
+        <p class="faq-a fade-in" *ngIf="openFaq === i">{{ f.a }}</p>
+      </div>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,160 @@
+<section class="page-hero">
+  <div class="container text-center">
+    <p class="eyebrow">Booking</p>
+    <h1 class="page-title">Reserve your auspicious date</h1>
+    <p class="page-sub">Pick a hall and date to see live availability and an instant estimate.</p>
+  </div>
+</section>
+
+<section class="section pt-5">
+  <div class="container">
+    <!-- Confirmation -->
+    <div class="confirm-card fade-up mx-auto" *ngIf="submitted as b; else bookingForm">
+      <div class="confirm-seal">✓</div>
+      <h2 class="section-title mb-2">Thank you, {{ b.name }}!</h2>
+      <p class="text-body-muted">Your request <strong>{{ b.id }}</strong> is received. Our coordinator will call
+        you on <strong>{{ b.phone }}</strong> within 24 hours to confirm.</p>
+      <dl class="confirm-grid">
+        <dt>Venue</dt><dd>{{ hallName(b.hallId) }}</dd>
+        <dt>Date</dt><dd>{{ b.date | date: 'EEEE, d MMMM y' }}</dd>
+        <dt>Event</dt><dd>{{ eventLabel(b.eventType) }}</dd>
+        <dt>Guests</dt><dd>{{ b.guests | number }}</dd>
+        <dt>Estimate</dt><dd>&#8377;{{ b.estimate | number }} <span class="small text-body-muted">incl. GST</span></dd>
+      </dl>
+      <div class="d-flex flex-wrap gap-3 justify-content-center mt-4">
+        <a class="btn btn-maroon" [href]="whatsappLink(b)" target="_blank" rel="noopener">Confirm on WhatsApp</a>
+        <button type="button" class="btn btn-outline-maroon" (click)="newRequest()">Make another request</button>
+      </div>
+    </div>
+
+    <!-- Booking form -->
+    <ng-template #bookingForm>
+      <form [formGroup]="form" (ngSubmit)="submit()" novalidate>
+        <div class="row g-4">
+          <div class="col-lg-8">
+            <!-- Step 1: venue -->
+            <div class="form-card">
+              <h3 class="form-step"><span>1</span> Choose your venue</h3>
+              <div class="row g-3">
+                <div class="col-md-4" *ngFor="let hall of venue.halls">
+                  <label class="hall-option" [class.selected]="form.get('hallId')?.value === hall.id">
+                    <input type="radio" formControlName="hallId" [value]="hall.id" class="visually-hidden">
+                    <span class="hall-swatch" [style.background]="hall.tone"></span>
+                    <span class="hall-option-name">{{ hall.name }}</span>
+                    <span class="hall-option-meta">{{ hall.capacity | number }} guests &middot; &#8377;{{ hall.pricePerDay | number }}</span>
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            <!-- Step 2: event -->
+            <div class="form-card">
+              <h3 class="form-step"><span>2</span> Event details</h3>
+              <div class="row g-3">
+                <div class="col-md-4">
+                  <label class="form-label" for="date">Event date</label>
+                  <input id="date" type="date" class="form-control" formControlName="date" [min]="today"
+                         [class.is-invalid]="invalid('date') || availability === 'booked'">
+                  <div class="avail ok" *ngIf="availability === 'available'">● Available</div>
+                  <div class="avail no" *ngIf="availability === 'booked'">● Already booked — try another date or hall</div>
+                  <div class="invalid-feedback d-block" *ngIf="availability === 'unknown' && invalid('date')">Please choose a date.</div>
+                </div>
+                <div class="col-md-4">
+                  <label class="form-label" for="eventType">Occasion</label>
+                  <select id="eventType" class="form-select" formControlName="eventType">
+                    <option *ngFor="let e of venue.eventTypes" [value]="e.id">{{ e.label }}</option>
+                  </select>
+                </div>
+                <div class="col-md-4">
+                  <label class="form-label" for="guests">Expected guests</label>
+                  <input id="guests" type="number" min="20" step="10" class="form-control" formControlName="guests"
+                         [class.is-invalid]="invalid('guests') || overCapacity">
+                  <div class="invalid-feedback d-block" *ngIf="overCapacity">
+                    This hall seats up to {{ selectedHall?.capacity | number }}.
+                  </div>
+                </div>
+              </div>
+
+              <p class="form-label mt-4 mb-2">Add-on services</p>
+              <div class="row g-2">
+                <div class="col-md-6" *ngFor="let a of venue.addOns">
+                  <label class="addon" [class.selected]="hasAddOn(a.id)">
+                    <input type="checkbox" class="form-check-input mt-0" [checked]="hasAddOn(a.id)"
+                           (change)="toggleAddOn(a.id, $any($event.target).checked)">
+                    <span class="flex-grow-1">{{ a.label }}</span>
+                    <span class="addon-price">&#8377;{{ a.price | number }}</span>
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            <!-- Step 3: contact -->
+            <div class="form-card">
+              <h3 class="form-step"><span>3</span> Your details</h3>
+              <div class="row g-3">
+                <div class="col-md-6">
+                  <label class="form-label" for="name">Full name</label>
+                  <input id="name" class="form-control" formControlName="name" autocomplete="name" [class.is-invalid]="invalid('name')">
+                  <div class="invalid-feedback">Please enter your name.</div>
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label" for="phone">Phone number</label>
+                  <input id="phone" type="tel" class="form-control" formControlName="phone" autocomplete="tel"
+                         placeholder="+91 98765 43210" [class.is-invalid]="invalid('phone')">
+                  <div class="invalid-feedback">Please enter a valid phone number.</div>
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label" for="email">Email <span class="text-body-muted">(optional)</span></label>
+                  <input id="email" type="email" class="form-control" formControlName="email" autocomplete="email" [class.is-invalid]="invalid('email')">
+                  <div class="invalid-feedback">That email doesn't look right.</div>
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label" for="notes">Anything else?</label>
+                  <input id="notes" class="form-control" formControlName="notes" placeholder="Muhurtham time, special requests…">
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Live estimate -->
+          <div class="col-lg-4">
+            <aside class="estimate-card">
+              <h3 class="estimate-title">Your estimate</h3>
+              <ul class="estimate-lines">
+                <li *ngFor="let l of estimate.lines"><span>{{ l.label }}</span><span>&#8377;{{ l.amount | number }}</span></li>
+                <li class="muted"><span>GST (18%)</span><span>&#8377;{{ estimate.gst | number }}</span></li>
+              </ul>
+              <div class="estimate-total">
+                <span>Total</span><span>&#8377;{{ estimate.total | number }}</span>
+              </div>
+              <p class="small estimate-note">An indicative price. Final quote is confirmed by our coordinator.</p>
+              <button type="submit" class="btn btn-gold w-100 btn-lg" [disabled]="availability === 'booked'">Send Booking Request</button>
+              <p class="small estimate-note mt-3 mb-0">Prefer to talk? <a routerLink="/contact">Contact us</a></p>
+            </aside>
+          </div>
+        </div>
+      </form>
+    </ng-template>
+
+    <!-- Recent requests -->
+    <div class="mt-5" *ngIf="(bookingService.bookings$ | async) as list">
+      <ng-container *ngIf="list.length">
+        <h3 class="hall-name mb-3">Your recent requests</h3>
+        <div class="table-responsive">
+          <table class="table requests-table align-middle">
+            <thead><tr><th>Ref</th><th>Venue</th><th>Date</th><th>Occasion</th><th class="text-end">Estimate</th></tr></thead>
+            <tbody>
+              <tr *ngFor="let b of list">
+                <td><strong>{{ b.id }}</strong></td>
+                <td>{{ hallName(b.hallId) }}</td>
+                <td>{{ b.date | date: 'd MMM y' }}</td>
+                <td>{{ eventLabel(b.eventType) }}</td>
+                <td class="text-end">&#8377;{{ b.estimate | number }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </ng-container>
+    </div>
+  </div>
+</section>

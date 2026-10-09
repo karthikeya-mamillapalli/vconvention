@@ -1,0 +1,157 @@
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-pattern"></div>
+  <div class="container position-relative">
+    <div class="row align-items-center g-5">
+      <div class="col-lg-7 text-center text-lg-start fade-up">
+        <p class="eyebrow">Welcome to V Convention</p>
+        <h1 class="display-title">Begin your forever<br><em>in a hall made for it</em></h1>
+        <p class="lead hero-lead">{{ venue.business.tagline }}. Three graceful venues, a traditional mandapam
+          and a team that treats your family like ours.</p>
+        <div class="d-flex flex-wrap gap-3 justify-content-center justify-content-lg-start mt-4">
+          <a routerLink="/booking" class="btn btn-gold btn-lg px-4">Check Availability</a>
+          <a routerLink="/" fragment="venues" class="btn btn-outline-ivory btn-lg px-4">Explore Venues</a>
+        </div>
+      </div>
+      <div class="col-lg-5 d-none d-lg-block fade-up delay-1">
+        <div class="hero-arch">
+          <svg viewBox="0 0 200 240" class="arch-svg" aria-hidden="true">
+            <path d="M20 240 V110 A80 80 0 0 1 180 110 V240" fill="none" stroke="currentColor" stroke-width="1.5"/>
+            <path d="M36 240 V114 A64 64 0 0 1 164 114 V240" fill="none" stroke="currentColor" stroke-width="0.8" opacity=".6"/>
+            <g transform="translate(100 92)" fill="currentColor">
+              <circle r="6"/>
+              <ellipse *ngFor="let a of petals" rx="5" ry="15" opacity=".85"
+                       [attr.transform]="'rotate(' + a + ') translate(0 -20)'"/>
+            </g>
+          </svg>
+          <div class="arch-caption">
+            <span class="arch-number">{{ venue.halls[0].capacity | number }}</span>
+            <span>guests in our Grand Hall</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STATS -->
+<section class="stats-band">
+  <div class="container">
+    <div class="row text-center g-4">
+      <div class="col-6 col-md-3" *ngFor="let s of venue.stats">
+        <div class="stat-value">{{ s.value }}</div>
+        <div class="stat-label">{{ s.label }}</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section class="section">
+  <div class="container">
+    <div class="row align-items-center g-5">
+      <div class="col-lg-6">
+        <div class="about-frame">
+          <div class="about-inner">
+            <span class="about-om">శుభం</span>
+            <p class="mb-0">Shubham — may every beginning be auspicious.</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-6">
+        <p class="eyebrow dark">Our story</p>
+        <h2 class="section-title">Tradition, warmth and quiet luxury</h2>
+        <div class="ornament-line"></div>
+        <p class="text-body-muted">Since {{ venue.business.since }}, V Convention has been where families come together
+          for the moments that matter most. From the first nadaswaram note to the last vidaai, we take care of
+          the details so you can be present with the people you love.</p>
+        <p class="text-body-muted">Whether you're planning a grand wedding for a thousand guests or an intimate
+          engagement, our team helps with décor, catering, stay and timings — all under one roof.</p>
+        <a routerLink="/contact" class="link-gold">Plan a visit &rarr;</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- VENUES (dynamic from VenueService) -->
+<section class="section section-cream" id="venues">
+  <div class="container">
+    <div class="text-center mb-5">
+      <p class="eyebrow dark">Our venues</p>
+      <h2 class="section-title">A space for every celebration</h2>
+      <div class="ornament-line mx-auto"></div>
+    </div>
+    <div class="row g-4">
+      <div class="col-md-6 col-lg-4" *ngFor="let hall of venue.halls">
+        <article class="hall-card h-100">
+          <div class="hall-visual" [style.background]="hall.tone">
+            <span class="hall-cap">Up to {{ hall.capacity | number }} guests</span>
+          </div>
+          <div class="hall-body">
+            <h3 class="hall-name">{{ hall.name }}</h3>
+            <p class="text-body-muted small">{{ hall.description }}</p>
+            <ul class="hall-features">
+              <li *ngFor="let f of hall.features">{{ f }}</li>
+            </ul>
+            <div class="d-flex justify-content-between align-items-end mt-auto pt-3">
+              <div>
+                <span class="price-from">from</span>
+                <span class="price">&#8377;{{ hall.pricePerDay | number }}</span>
+                <span class="price-from">/ day</span>
+              </div>
+              <a class="btn btn-maroon btn-sm" routerLink="/booking" [queryParams]="{ hall: hall.id }">Book</a>
+            </div>
+          </div>
+        </article>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- AMENITIES -->
+<section class="section">
+  <div class="container">
+    <div class="text-center mb-5">
+      <p class="eyebrow dark">Amenities</p>
+      <h2 class="section-title">Thoughtfully taken care of</h2>
+      <div class="ornament-line mx-auto"></div>
+    </div>
+    <div class="row g-4">
+      <div class="col-sm-6 col-lg-4" *ngFor="let a of venue.amenities">
+        <div class="amenity">
+          <span class="amenity-icon">{{ a.icon }}</span>
+          <h4 class="amenity-title">{{ a.title }}</h4>
+          <p class="text-body-muted small mb-0">{{ a.text }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section class="section testimonial-band">
+  <div class="container text-center">
+    <p class="eyebrow">Kind words</p>
+    <div class="quote-wrap">
+      <ng-container *ngFor="let t of venue.testimonials; let i = index">
+        <figure class="quote fade-in" *ngIf="i === activeQuote">
+          <blockquote>&ldquo;{{ t.quote }}&rdquo;</blockquote>
+          <figcaption><strong>{{ t.name }}</strong> &middot; {{ t.event }}</figcaption>
+        </figure>
+      </ng-container>
+    </div>
+    <div class="quote-dots">
+      <button type="button" *ngFor="let t of venue.testimonials; let i = index"
+              [class.active]="i === activeQuote" (click)="go(i)" [attr.aria-label]="'Show review ' + (i + 1)"></button>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="section cta">
+  <div class="container text-center">
+    <h2 class="section-title">Your muhurtham deserves the perfect hall</h2>
+    <p class="text-body-muted mb-4">Popular dates fill months ahead. Check availability in seconds.</p>
+    <a routerLink="/booking" class="btn btn-maroon btn-lg px-5">Reserve Your Date</a>
+  </div>
+</section>

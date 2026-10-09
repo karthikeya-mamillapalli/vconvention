@@ -1,0 +1,49 @@
+<footer class="site-footer">
+  <div class="footer-border"></div>
+  <div class="container py-5">
+    <div class="row g-4">
+      <div class="col-lg-4">
+        <div class="brand mb-3">
+          <span class="brand-mark">V</span>
+          <span class="brand-text">
+            <span class="brand-name">V Convention</span>
+            <span class="brand-sub">Kalyana Mandapam</span>
+          </span>
+        </div>
+        <p class="footer-muted">{{ venue.business.tagline }}. Hosting weddings, receptions and family
+          celebrations with warmth and tradition since {{ venue.business.since }}.</p>
+      </div>
+
+      <div class="col-6 col-lg-2">
+        <h6 class="footer-head">Explore</h6>
+        <ul class="list-unstyled footer-links">
+          <li><a routerLink="/">Home</a></li>
+          <li><a routerLink="/booking">Booking</a></li>
+          <li><a routerLink="/contact">Contact Us</a></li>
+        </ul>
+      </div>
+
+      <div class="col-6 col-lg-3">
+        <h6 class="footer-head">Our Venues</h6>
+        <ul class="list-unstyled footer-links">
+          <li *ngFor="let hall of venue.halls">
+            <a routerLink="/booking" [queryParams]="{ hall: hall.id }">{{ hall.name }}</a>
+          </li>
+        </ul>
+      </div>
+
+      <div class="col-lg-3">
+        <h6 class="footer-head">Visit Us</h6>
+        <p class="footer-muted mb-2">{{ venue.business.address }}</p>
+        <p class="mb-1"><a [href]="'tel:' + venue.business.phone">{{ venue.business.phone }}</a></p>
+        <p class="mb-0"><a [href]="'mailto:' + venue.business.email">{{ venue.business.email }}</a></p>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <div class="container d-flex flex-column flex-md-row justify-content-between gap-2">
+      <span>&copy; {{ year }} V Convention. All rights reserved.</span>
+      <span>Crafted with care for every celebration</span>
+    </div>
+  </div>
+</footer>

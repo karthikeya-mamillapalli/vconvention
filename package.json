@@ -1,0 +1,33 @@
+{
+  "name": "v-convention",
+  "version": "1.0.0",
+  "scripts": {
+    "ng": "ng",
+    "start": "ng serve",
+    "build": "ng build",
+    "watch": "ng build --watch --configuration development",
+    "start:newnode": "node --openssl-legacy-provider ./node_modules/@angular/cli/bin/ng serve",
+    "build:newnode": "node --openssl-legacy-provider ./node_modules/@angular/cli/bin/ng build"
+  },
+  "private": true,
+  "dependencies": {
+    "@angular/animations": "~12.2.17",
+    "@angular/common": "~12.2.17",
+    "@angular/compiler": "~12.2.17",
+    "@angular/core": "~12.2.17",
+    "@angular/forms": "~12.2.17",
+    "@angular/platform-browser": "~12.2.17",
+    "@angular/platform-browser-dynamic": "~12.2.17",
+    "@angular/router": "~12.2.17",
+    "bootstrap": "~5.1.3",
+    "rxjs": "~6.6.7",
+    "tslib": "^2.3.0",
+    "zone.js": "~0.11.4"
+  },
+  "devDependencies": {
+    "@angular-devkit/build-angular": "~12.2.18",
+    "@angular/cli": "~12.2.18",
+    "@angular/compiler-cli": "~12.2.17",
+    "typescript": "~4.3.5"
+  }
+}
